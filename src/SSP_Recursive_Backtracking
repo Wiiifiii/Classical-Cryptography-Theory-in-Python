@@ -1,0 +1,51 @@
+import random
+import time
+
+def subset_sum(numbers, target, partial=[]):
+    s = sum(partial)
+
+    # Check the current partial sum
+    if s == target:
+        return partial  # Return the subset instead of just True to show the actual elements
+    if s >= target:
+        return False
+
+    for i in range(len(numbers)):
+        n = numbers[i]
+        remaining = numbers[i+1:]
+        result = subset_sum(remaining, target, partial + [n])
+        if result:
+            return result  # Propagate the successful subset back up the recursion stack
+        
+    return False
+
+def generate_random_numbers(size, max_val=100): # Generate random numbers between -max_val and max_val inclusive 100
+    return [random.randint(-max_val, max_val) for _ in range(size)]
+
+# Sizes of the input sets to test
+sizes = [10, 15, 20]
+
+# Test the function with different sizes, targets, and random numbers
+for size in sizes:
+    numbers = generate_random_numbers(size)
+    target = random.randint(-size * 10, size * 10)  # a target that might not be achievable
+
+    start_time = time.time()
+    subset = subset_sum(numbers, target)
+    end_time = time.time()
+    
+    print(f"Set of random numbers: {numbers}")
+    print(f"Size: {size}, Target: {target}, Time taken: {end_time - start_time:.5f} seconds")
+    if subset:
+        print(f"Found a valid subset: {subset}")
+    else:
+        print("No subset with the required sum was found.")
+
+
+# Small Sets (n ≤ 20): Almost any exact method (backtracking, DP, Bitmask) is feasible.
+# Medium Sets (20 < n ≤ 40): Meet-in-the-Middle or optimized DP approaches are suitable.
+# Large Sets (n > 40): Heuristic or approximate methods, or leveraging ILP solvers may be necessary.
+
+# a backtracking algorithm to explore all possible subsets. This method is exhaustive and ensures that 
+# all possibilities are checked, making it suitable for small to medium-sized sets (like n = 10, 15, 20). 
+# However, its time complexity is exponential (O(2^n)), which means it can become inefficient for larger sets.
